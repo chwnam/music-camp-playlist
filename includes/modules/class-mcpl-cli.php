@@ -13,14 +13,50 @@ if ( ! class_exists( 'MCPL_CLI' ) ) {
 	 */
 	class MCPL_CLI implements MCPL_Module {
 		/**
-		 * Run now.
+		 * Today
 		 *
-		 * @subcommand
+		 * ## OPTIONS
+		 *
+		 * [<days>]
+		 * : Days to fetch. Up to 10.
+		 * ---
+		 * default: 2
+		 *
+		 * [--force]
+		 * : Forced fetch.
+		 */
+		public function recent( array $args, array $kwargs ): void {
+			$days  = min( 10, max( 1, (int) $args[0] ) );
+			$force = (bool) ( $kwargs['force'] ?? false );
+
+			mcpl()->runner->recent_fetch( $days, $force );
+		}
+
+		/**
+		 * Fetch
+		 *
+		 * ## OPTIONS
+		 *
+		 * <page>
+		 * : page number.
+		 *
+		 * @param array $args
 		 *
 		 * @return void
+		 * @throws WP_CLI\ExitException
 		 */
-		public function run(): void {
-			WP_CLI::success( 'Okay!' );
+		public function fetch( array $args ): void {
+			$page = intval( $args[0] );
+
+			if ( $page < 1 ) {
+				WP_CLI::error( "Page should be a positive integer." );
+			}
+
+			WP_CLI::line( "Fetching page $page. Please wait a moment." );
+
+			mcpl()->runner->fetch_page( $page );
+
+			WP_CLI::success( "Done!" );
 		}
 
 		/**
@@ -40,8 +76,6 @@ if ( ! class_exists( 'MCPL_CLI' ) ) {
 			$wpdb->query( "TRUNCATE {$wpdb->prefix}mpcl_artists" );
 
 			mcpl()->store->set_last_date( '' );
-			mcpl()->store->set_last_page( 0 );
-			mcpl()->store->set_last_page_reached( false );
 
 			WP_CLI::success( 'All MCPL tables truncated!' );
 		}

@@ -26,24 +26,25 @@ if ( ! class_exists( 'MCPL_Runner' ) ) {
 			$logger = mcpl_get_logger();
 			$logger->info( "Starting 'mcpl_playlist' schedule." );
 
-			$this->today_fetch();
-			$this->incremental_fetch();
+			$this->recent_fetch();
 
 			$logger->info( "'mcpl_playlist' schedule finished." );
 		}
 
-		public function today_fetch(): void {
+		public function recent_fetch( int $days = 2, bool $force = false ): void {
+			$logger  = mcpl_get_logger();
 			$fetcher = mcpl()->fetcher;
 			$store   = mcpl()->store;
 			$last    = $store->get_last_date();
 
-			$today = wp_date( 'Y-m-d', wp_timezone() );
-			if ( $last === $today ) {
+			$today = wp_date( 'Y-m-d', null, wp_timezone() );
+			if ( ! $force && $last === $today ) {
+				$logger->info( "today_fetch() stopped because it is already fetched." );
 				return;
 			}
 
-			if ( empty( $last ) ) {
-				$last_date = date_create_immutable( 'yesterday', wp_timezone() );
+			if ( empty( $last ) || $force ) {
+				$last_date = date_create_immutable( "$days days ago", wp_timezone() );
 			} else {
 				$last_date = date_create_immutable( $last, wp_timezone() );
 			}
@@ -61,6 +62,8 @@ if ( ! class_exists( 'MCPL_Runner' ) ) {
 				}
 			}
 
+			$logger->info( count( $targets ) . " item(s) targeted." );
+
 			if ( $targets ) {
 				$store->set_last_date( $targets[0]['date'] );
 				while ( $targets ) {
@@ -72,37 +75,32 @@ if ( ! class_exists( 'MCPL_Runner' ) ) {
 			}
 		}
 
-		public function incremental_fetch(): void {
-			$fetcher   = mcpl()->fetcher;
-			$store     = mcpl()->store;
-			$page      = $store->get_last_page();
-			$count     = 2;
-			$last_date = "2006-01-01";
+		public function fetch_page( int $page ): void {
+			$logger  = mcpl_get_logger();
+			$fetcher = mcpl()->fetcher;
+			$store   = mcpl()->store;
 
-			if ( $store->is_last_page_reached() ) {
+			sleep( 2 );
+			$logger->info( "Fetching page $page ..." );
+			$items = $fetcher->fetch_list( $page );
+
+			if ( ! $items ) {
+				$logger->info( "Fetching page $page returned no items!" );
 				return;
 			}
 
-			for ( $i = 1; $i <= $count; ++ $i ) {
+			while ( $items ) {
+				$item = array_pop( $items );
+				$id   = $item['id'];
+				$date = $item['date'];
+
 				sleep( 2 );
-				$items = $fetcher->fetch_list( $page + $i );
-
-				while ( $items ) {
-					$item = array_pop( $targets );
-					$id   = $item['id'];
-					$date = $item['date'];
-
-					sleep( 2 );
-					$playlist = $fetcher->fetch_item( $id );
-					$store->save_playlist( $date, $playlist );
-
-					if ( $date === $last_date ) {
-						$store->set_last_page_reached( true );
-					}
-				}
+				$logger->info( "Fetching $date ... " );
+				$playlist = $fetcher->fetch_item( $id );
+				$store->save_playlist( $date, $playlist );
 			}
 
-			$store->set_last_page( $page + $count );
+			$logger->info( "Fetching page $page is done." );
 		}
 	}
 }

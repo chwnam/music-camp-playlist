@@ -17,6 +17,8 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 		 * @return array{array{id: number, date: string}}
 		 */
 		public function fetch_list( int $page = 1 ): array {
+			$logger = mcpl_get_logger();
+
 			$url = add_query_arg(
 				[
 					'progCode' => $this->prog_code,
@@ -25,6 +27,7 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 				static::URL_BASE
 			);
 
+			$logger->info( "Fetching URL $url ... " );
 			$body = static::fetch_url( $url );
 
 			preg_match_all( ':<td>(\d{4}-\d{2}-\d{2})</td>:', $body, $date_matches );
@@ -41,6 +44,8 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 				}
 			}
 
+			$logger->info( "Fetching list finished. " . ( count( $items ) ) . " item(s) collected." );
+
 			return $items;
 		}
 
@@ -50,6 +55,8 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 		 * @return array{array{artist: string, title: string}}
 		 */
 		public function fetch_item( int|string $id ): array {
+			$logger = mcpl_get_logger();
+
 			$url = add_query_arg(
 				[
 					'seqID'    => $id,
@@ -59,6 +66,7 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 				static::URL_BASE . "/View"
 			);
 
+			$logger->info( "Fetching URL $url ... " );
 			$body = static::fetch_url( $url );
 
 			preg_match_all( ':<td><p class="title">(.+?)</p></td>:', $body, $title_match );
@@ -86,6 +94,8 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 					];
 				}
 			}
+
+			$logger->info( "Fetching item finished. " . ( count( $items ) ) . " item(s) collected." );
 
 			return $items;
 		}

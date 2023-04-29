@@ -124,31 +124,13 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 		}
 
 		public function get_last_date(): string {
-			$last_date = get_transient( 'mcpl_last_date' );
+			$last_date = get_site_transient( 'mcpl_last_date' );
 
 			return $last_date ?: '';
 		}
 
 		public function set_last_date( string $date ): void {
-			set_transient( 'mcpl_last_date', $date );
-		}
-
-		public function get_last_page(): int {
-			$chapter = (int) get_transient( 'mcpl_last_page' );
-
-			return max( 0, $chapter );
-		}
-
-		public function set_last_page( int $page ): void {
-			set_transient( 'mcpl_last_page', $page );
-		}
-
-		public function is_last_page_reached(): bool {
-			return (bool) get_transient( 'mcpl_last_page_reached' );
-		}
-
-		public function set_last_page_reached( bool $reached ): void {
-			set_transient( 'mcpl_last_page_reached', $reached );
+			set_site_transient( 'mcpl_last_date', $date );
 		}
 	}
 }
