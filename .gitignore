@@ -1,0 +1,27 @@
+.git
+.idea
+.vscode
+.DS_Store
+
+*.bak
+*.cache
+*.html
+*.log
+
+/assets/**/*.js.map
+/assets/**/*.css.map
+/assets/**/*.hot-update.js
+/assets/**/*.hot-update.json
+
+/bin/vendor
+/cli/vendor
+/vendor/*
+
+node_modules
+
+# Uncomment below two lines to commit autoload-generated files.
+!/vendor/composer
+!/vendor/autoload.php
+
+# Comment out below when you release this.
+*.lock

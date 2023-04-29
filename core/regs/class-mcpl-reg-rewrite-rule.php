@@ -1,0 +1,60 @@
+<?php
+/**
+ * Naran Boilerplate Core
+ *
+ * regs/class-mcpl-reg-rewrite-rule.php
+ */
+
+/* ABSPATH check */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! class_exists( 'MCPL_Reg_Rewrite_Rule' ) ) {
+	class MCPL_Reg_Rewrite_Rule implements MCPL_Reg {
+		public string $regex;
+
+		public string $query;
+
+		public string $after;
+
+		/**
+		 * @var callable|string|null
+		 */
+		public $binding;
+
+		/**
+		 * @var string[]
+		 */
+		public array $query_vars;
+
+		/**
+		 * Constructor method
+		 *
+		 * @param string                    $regex      Regular expression for URL matching.
+		 * @param string                    $query      Rewrite query string.
+		 * @param string                    $after      'top', 'bottom'.
+		 * @param Closure|array|string|null $binding    Callback method for 'template_redirect' action.
+		 * @param string|array              $query_vars Public query variables to append.
+		 */
+		public function __construct(
+			string $regex,
+			string $query,
+			string $after = 'bottom',
+			Closure|array|string|null $binding = null,
+			array|string $query_vars = ''
+		) {
+			$this->regex      = $regex;
+			$this->query      = $query;
+			$this->after      = $after;
+			$this->binding    = $binding;
+			$this->query_vars = (array) $query_vars;
+		}
+
+		public function register( $dispatch = null ): void {
+			if ( $this->regex && $this->query ) {
+				add_rewrite_rule( $this->regex, $this->query, $this->after );
+			}
+		}
+	}
+}

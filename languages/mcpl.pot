@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-03-18T12:19:36+09:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.5.0\n"
+"X-Domain: mcpl\n"
+
+#. translators: formatted module name.
+#: core/abstracts/abstract-mcpl-main-base.php:146
+msgid "%s is invalid for callback."
+msgstr ""
+
+#. translators: formatted callback
+#: core/abstracts/registers/abstract-mcpl-register-base-rewrite-rule.php:69
+msgid "Rewrite rule binding `%s` is invalid. Please check your rewrite rule register items."
+msgstr ""
+
+#: core/core-functions.php:208
+msgid "Front module is not set."
+msgstr ""
+
+#: core/core-functions.php:219
+msgid "$instance should be a front module instance."
+msgstr ""
+
+#: includes/class-mcpl-main.php:71
+msgid "MCPL settings"
+msgstr ""
+
+#: includes/class-mcpl-main.php:72
+msgid "Settings"
+msgstr ""
+
+#: includes/registers/class-mcpl-register-theme-support.php:105
+msgid "Primary Menu"
+msgstr ""
+
+#: includes/registers/class-mcpl-register-theme-support.php:106
+msgid "Secondary Menu"
+msgstr ""
