@@ -144,7 +144,7 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 
 			$f     = implode( ', ', $fields );
 			$where = $wpdb->prepare(
-				'WHERE h.date >= %s AND h.date <= %s',
+				'WHERE h.date > %s AND h.date <= %s',
 				$until->format( 'Y-m-d' ),
 				$since->format( 'Y-m-d' ),
 			);

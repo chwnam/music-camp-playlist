@@ -11,13 +11,14 @@ if ( ! class_exists( 'MCPL_Main' ) ) {
 	/**
 	 * Class MCPL_Main
 	 *
-	 * @property-read MCPL_Admin       $admin
-	 * @property-read MCPL_CLI         $cli
-	 * @property-read MCPL_Fetcher     $fetcher
-	 * @property-read MCPL_Registers   $registers
-	 * @property-read MCPL_REST_Routes $REST_routes
-	 * @property-read MCPL_Runner      $runner
-	 * @property-read MCPL_Store       $store
+	 * @property-read MCPL_Admin            $admin
+	 * @property-read MCPL_CLI              $cli
+	 * @property-read MCPL_Fetcher          $fetcher
+	 * @property-read MCPL_Registers        $registers
+	 * @property-read MCPL_REST_Routes      $rest_routes
+	 * @property-read MCPL_Rewrite_Handlers $rewrite_handlers
+	 * @property-read MCPL_Runner           $runner
+	 * @property-read MCPL_Store            $store
 	 */
 	class MCPL_Main extends MCPL_Main_Base {
 		/**
@@ -28,13 +29,14 @@ if ( ! class_exists( 'MCPL_Main' ) ) {
 		 */
 		protected function get_early_modules(): array {
 			return [
-				'admin'       => MCPL_Admin::class,
-				'cli'         => MCPL_CLI::class,
-				'fetcher'     => fn() => $this->new_instance( MCPL_Fetcher::class ),
-				'registers'   => MCPL_Registers::class,
-				'rest_routes' => MCPL_REST_Routes::class,
-				'runner'      => MCPL_Runner::class,
-				'store'       => fn() => $this->new_instance( MCPL_Store::class ),
+				'admin'            => MCPL_Admin::class,
+				'cli'              => MCPL_CLI::class,
+				'fetcher'          => fn() => $this->new_instance( MCPL_Fetcher::class ),
+				'registers'        => MCPL_Registers::class,
+				'rest_routes'      => MCPL_REST_Routes::class,
+				'rewrite_handlers' => MCPL_Rewrite_Handlers::class,
+				'runner'           => MCPL_Runner::class,
+				'store'            => fn() => $this->new_instance( MCPL_Store::class ),
 			];
 		}
 

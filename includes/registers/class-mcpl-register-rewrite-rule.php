@@ -15,7 +15,7 @@ if ( ! class_exists( 'MCPL_Register_Rewrite_Rule' ) ) {
 		 * @return Generator
 		 */
 		public function get_items(): Generator {
-			yield; // yield MCPL_Reg_Rewrite_Rule();
+			yield from MCPL_Rewrite_Handlers::get_regs();
 		}
 	}
 }

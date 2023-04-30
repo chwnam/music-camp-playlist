@@ -115,6 +115,7 @@ return array(
     'MCPL_Register_WP_CLI' => $baseDir . '/includes/registers/class-mcpl-register-wp-cli.php',
     'MCPL_Register_Widget' => $baseDir . '/includes/registers/class-mcpl-register-widget.php',
     'MCPL_Registers' => $baseDir . '/includes/modules/class-mcpl-registers.php',
+    'MCPL_Rewrite_Handlers' => $baseDir . '/includes/modules/class-mcpl-rewrite-handlers.php',
     'MCPL_Runner' => $baseDir . '/includes/modules/class-mcpl-runner.php',
     'MCPL_Script_Helper' => $baseDir . '/core/etc/class-mcpl-script-helper.php',
     'MCPL_Store' => $baseDir . '/includes/modules/class-mcpl-store.php',

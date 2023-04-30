@@ -145,6 +145,7 @@ class ComposerStaticInit3a30049e4ad4d4db486ec69e3a67ab99
         'MCPL_Register_WP_CLI' => __DIR__ . '/../..' . '/includes/registers/class-mcpl-register-wp-cli.php',
         'MCPL_Register_Widget' => __DIR__ . '/../..' . '/includes/registers/class-mcpl-register-widget.php',
         'MCPL_Registers' => __DIR__ . '/../..' . '/includes/modules/class-mcpl-registers.php',
+        'MCPL_Rewrite_Handlers' => __DIR__ . '/../..' . '/includes/modules/class-mcpl-rewrite-handlers.php',
         'MCPL_Runner' => __DIR__ . '/../..' . '/includes/modules/class-mcpl-runner.php',
         'MCPL_Script_Helper' => __DIR__ . '/../..' . '/core/etc/class-mcpl-script-helper.php',
         'MCPL_Store' => __DIR__ . '/../..' . '/includes/modules/class-mcpl-store.php',
