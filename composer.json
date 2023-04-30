@@ -42,6 +42,7 @@
     "files": [
       "core/functions.php",
       "includes/functions.php",
+      "includes/rest-functions.php",
       "includes/uninstall-functions.php"
     ],
     "classmap": [

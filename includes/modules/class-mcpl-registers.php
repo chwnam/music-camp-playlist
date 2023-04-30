@@ -68,7 +68,7 @@ if ( ! class_exists( 'MCPL_Registers' ) ) {
 //					'option'        => MCPL_Register_Option::class,
 //					'post_meta'     => MCPL_Register_Post_Meta::class,
 //					'post_type'     => MCPL_Register_Post_Type::class,
-//					'rest_route'    => MCPL_Register_REST_Route::class,
+					'rest_route'    => MCPL_Register_REST_Route::class,
 //					'rewrite_rule'  => MCPL_Register_Rewrite_Rule::class,
 //					'role'          => function () { return new MCPL_Register_Role(); },
 //					'script'        => MCPL_Register_Script::class,

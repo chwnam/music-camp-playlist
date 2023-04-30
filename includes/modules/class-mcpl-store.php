@@ -110,6 +110,82 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 		}
 
 		/**
+		 * @param array $args
+		 *
+		 * @return MCPL_Object_Playlist_Query
+		 */
+		public function query( array $args = [] ): MCPL_Object_Playlist_Query {
+			global $wpdb;
+
+			$defaults = [
+				'since' => '',
+				'days'  => 1,
+			];
+
+			$args = wp_parse_args( $args, $defaults );
+
+			if ( $args['since'] ) {
+				$since = date_create_immutable( "{$args['since']} 00:00:00", wp_timezone() );
+			} else {
+				$since = date_create_immutable( 'today midnight', wp_timezone() );
+			}
+
+			$days  = $args['days'] ?: 1;
+			$until = $since->sub( new DateInterval( "P{$days}D" ) );
+
+			$fields = [
+				"h.id",
+				"h.date",
+				"t.id AS track_id",
+				"t.title",
+				"a.id AS artist_id",
+				"a.name AS artist_name",
+			];
+
+			$f     = implode( ', ', $fields );
+			$where = $wpdb->prepare(
+				'WHERE h.date >= %s AND h.date <= %s',
+				$until->format( 'Y-m-d' ),
+				$since->format( 'Y-m-d' ),
+			);
+
+//			if ( $args['search'] ) {
+//				$like  = esc_sql( '%' . $wpdb->esc_like( $args['search'] ) . '%' );
+//				$where .= $wpdb->prepare(
+//					" AND ((a.name LIKE %s) OR (t.title LIKE %s))",
+//					$like,
+//					$like
+//				);
+//			}
+//
+//			if ( $args['artist_id'] ) {
+//				$where .= $wpdb->prepare( " AND a.id=%d", $args['artist_id'] );
+//			}
+//
+//			if ( $args['track_id'] ) {
+//				$where .= $wpdb->prepare( " AND t.id=%d", $args['track_id'] );
+//			}
+
+			$query = "SELECT SQL_CALC_FOUND_ROWS $f FROM {$wpdb->prefix}mcpl_artists AS a" .
+			         " INNER JOIN {$wpdb->prefix}mcpl_tracks AS t ON t.artist_id=a.id" .
+			         " INNER JOIN {$wpdb->prefix}mcpl_history AS h ON h.track_id=t.id" .
+			         " $where ORDER BY h.date DESC, h.id";
+
+			$wpdb->timer_start();
+			$rows       = $wpdb->get_results( $query );
+			$time       = $wpdb->timer_stop();
+			$found_rows = (int) $wpdb->get_var( "SELECT FOUND_ROWS()" );
+			$records    = array_map( [ MCPL_Object_Playlist::class, 'from' ], $rows );
+
+			$result              = new MCPL_Object_Playlist_Query();
+			$result->items       = $records;
+			$result->total       = $found_rows;
+			$result->time_spent  = $time;
+
+			return $result;
+		}
+
+		/**
 		 * @param string                                      $date
 		 * @param array{array{artist: string, title: string}} $playlist
 		 *

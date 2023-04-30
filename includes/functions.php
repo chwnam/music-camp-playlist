@@ -187,3 +187,15 @@ if ( ! function_exists( 'mcpl_get_logger' ) ) {
 		return $logger;
 	}
 }
+
+
+if ( ! function_exists( 'mcpl_get_prop' ) ) {
+	function mcpl_get_prop( array|object $target, string $key, mixed $default = '' ): mixed {
+		if ( is_array( $target ) ) {
+			return $target[ $key ] ?? $default;
+		} elseif ( is_object( $target ) ) {
+			return $target->$key ?? $default;
+		}
+		return $default;
+	}
+}
