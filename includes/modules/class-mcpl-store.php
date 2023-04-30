@@ -127,7 +127,7 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 			if ( $args['since'] ) {
 				$since = date_create_immutable( "{$args['since']} 00:00:00", wp_timezone() );
 			} else {
-				$since = date_create_immutable( 'today midnight', wp_timezone() );
+				$since = date_create_immutable( $this->get_last_date(), wp_timezone() );
 			}
 
 			$days  = $args['days'] ?: 1;
