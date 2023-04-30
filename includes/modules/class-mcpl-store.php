@@ -124,13 +124,23 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 		}
 
 		public function get_last_date(): string {
-			$last_date = get_site_transient( 'mcpl_last_date' );
+			global $wpdb;
 
-			return $last_date ?: '';
+			return $wpdb->get_var( "SELECT MAX(date) FROM {$wpdb->prefix}mcpl_history" ) ?: '';
 		}
 
-		public function set_last_date( string $date ): void {
-			set_site_transient( 'mcpl_last_date', $date );
+		public function get_first_date(): string {
+			global $wpdb;
+
+			return $wpdb->get_var( "SELECT MIN(date) FROM {$wpdb->prefix}mcpl_history" ) ?: '';
+		}
+
+		public function get_last_page(): int {
+			return (int) ( get_site_transient( 'mcpl_last_page' ) ?: 0 );
+		}
+
+		public function set_last_page( int $page ): void {
+			set_site_transient( 'mcpl_last_page', $page );
 		}
 	}
 }

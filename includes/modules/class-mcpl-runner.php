@@ -15,6 +15,9 @@ if ( ! class_exists( 'MCPL_Runner' ) ) {
 		public function __construct() {
 			/** @uses mcpl_playlist() */
 			$this->add_action( 'mcpl_playlist' );
+
+			/** @uses mcpl_scrap_all() */
+			$this->add_action( 'mcpl_scrap_all' );
 		}
 
 		/**
@@ -23,51 +26,49 @@ if ( ! class_exists( 'MCPL_Runner' ) ) {
 		 * @return void
 		 */
 		public function mcpl_playlist(): void {
-			$logger = mcpl_get_logger();
-			$logger->info( "Starting 'mcpl_playlist' schedule." );
-
-			$this->recent_fetch();
-
-			$logger->info( "'mcpl_playlist' schedule finished." );
+			$this->daily_fetch();
 		}
 
-		public function recent_fetch( int $days = 2, bool $force = false ): void {
-			$logger  = mcpl_get_logger();
+		/**
+		 * 지정된 주기마다 페이지를 모두 수집 처리.
+		 */
+		public function mcpl_scrap_all(): void {
+			$store      = mcpl()->store;
+			$last_page  = $store->get_last_page();
+			$first_date = $store->get_first_date();
+
+			if ( $first_date !== '2006-01-01' ) {
+				$this->fetch_page( $last_page + 1 );
+				$store->set_last_page( $last_page + 1 );
+			}
+		}
+
+		/**
+		 * 오늘의 플레이리스트 추출.
+		 *
+		 * @return void
+		 */
+		public function daily_fetch(): void {
 			$fetcher = mcpl()->fetcher;
 			$store   = mcpl()->store;
-			$last    = $store->get_last_date();
 
-			$today = wp_date( 'Y-m-d', null, wp_timezone() );
-			if ( ! $force && $last === $today ) {
-				$logger->info( "today_fetch() stopped because it is already fetched." );
+			$now  = date_create_immutable( 'now', wp_timezone() );
+			$last = $store->get_last_date();
+			$date = date_create_immutable( $last ?: "5 days ago", wp_timezone() );
+
+			if ( $last === $now->format( 'Y-m-d' ) || 21 > ( (int) $now->format( 'G' ) ) ) {
+				// 음악캠프가 끝나는 시각은 오후 8시이고, 선곡표를 올리는 시간의 여유는 1시간으로 두면 최소 오후 9시는 되어야
+				// 그 날의 선곡표 업데이트를 기대할 수 있을 것이다.
 				return;
 			}
 
-			if ( empty( $last ) || $force ) {
-				$last_date = date_create_immutable( "$days days ago", wp_timezone() );
-			} else {
-				$last_date = date_create_immutable( $last, wp_timezone() );
-			}
-
 			sleep( 2 );
-			$list    = $fetcher->fetch_list();
-			$targets = [];
+			$list = $fetcher->fetch_list();
 
-			foreach ( $list as $item ) {
+			while ( $list ) {
+				$item      = array_pop( $list );
 				$item_date = date_create_immutable( $item['date'], wp_timezone() );
-				if ( $item_date > $last_date ) {
-					$targets[] = $item;
-				} else {
-					break;
-				}
-			}
-
-			$logger->info( count( $targets ) . " item(s) targeted." );
-
-			if ( $targets ) {
-				$store->set_last_date( $targets[0]['date'] );
-				while ( $targets ) {
-					$item = array_pop( $targets );
+				if ( $item_date > $date ) {
 					sleep( 2 );
 					$playlist = $fetcher->fetch_item( $item['id'] );
 					$store->save_playlist( $item['date'], $playlist );

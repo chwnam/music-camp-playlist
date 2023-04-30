@@ -13,26 +13,6 @@ if ( ! class_exists( 'MCPL_CLI' ) ) {
 	 */
 	class MCPL_CLI implements MCPL_Module {
 		/**
-		 * Today
-		 *
-		 * ## OPTIONS
-		 *
-		 * [<days>]
-		 * : Days to fetch. Up to 10.
-		 * ---
-		 * default: 2
-		 *
-		 * [--force]
-		 * : Forced fetch.
-		 */
-		public function recent( array $args, array $kwargs ): void {
-			$days  = min( 10, max( 1, (int) $args[0] ) );
-			$force = (bool) ( $kwargs['force'] ?? false );
-
-			mcpl()->runner->recent_fetch( $days, $force );
-		}
-
-		/**
 		 * Fetch
 		 *
 		 * ## OPTIONS
