@@ -15,9 +15,19 @@
 			width: 18px;
 			height: 18px;
 		}
+
+		body.logged-in.admin-bar > header {
+			margin-top: 32px;
+		}
+
+		@media screen and (max-width: 782px) {
+            body.logged-in.admin-bar > header {
+                margin-top: 46px;
+            }
+		}
 	</style>
 </head>
-<body>
+<body <?php body_class(); ?>>
 <header>
 	<nav class="navbar navbar-expand bg-body-tertiary">
 		<div class="container">

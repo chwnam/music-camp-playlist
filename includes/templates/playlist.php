@@ -5,6 +5,8 @@
  * @var string                                $music_icon_url
  * @var string                                $video_icon_url
  * @var array<string, MCPL_Object_Playlist[]> $items
+ * @var string                                $next
+ * @var string                                $prev
  */
 include __DIR__ . '/header.php';
 
@@ -17,7 +19,7 @@ $is_mobile = wp_is_mobile();
 		<h5 class="mt-3 mb-2">
 			<?php echo esc_html( $d ? $d->format( 'Y년 m월 d일' ) : '' ); ?>
 		</h5>
-		<ul class="list-unstyled mb-5">
+		<ul class="list-unstyled mb-2">
 			<?php foreach ( $daily_playlist as $idx => $item ): ?>
 				<li>
 					<div class="row m-0">
@@ -64,6 +66,19 @@ $is_mobile = wp_is_mobile();
 				</li>
 			<?php endforeach; ?>
 		</ul>
+		<div class="col-12 col-md-10 col-lg-8 d-flex justify-content-between mb-5 px-4">
+			<?php if ( $next ) : ?>
+				<a href="?date=<?php echo esc_attr( $next ); ?>" class="text-decoration-none">다음 날짜</a>
+			<?php else: ?>
+				<span>&nbsp;</span>
+			<?php endif; ?>
+
+			<?php if ( $prev ) : ?>
+				<a href="?date=<?php echo esc_attr( $prev ); ?>" class="text-decoration-none">이전 날짜</a>
+			<?php else: ?>
+				<span>&nbsp;</span>
+			<?php endif; ?>
+		</div>
 	<?php endforeach; ?>
 <?php else: ?>
 	<p>아직 플레이리스트 수집이 되지 않았습니다.</p>
