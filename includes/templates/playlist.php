@@ -7,6 +7,7 @@
  * @var array<string, MCPL_Object_Playlist[]> $items
  * @var string                                $next
  * @var string                                $prev
+ * @var string                                $first_date
  */
 include __DIR__ . '/header.php';
 
@@ -14,6 +15,15 @@ $is_mobile = wp_is_mobile();
 ?>
 
 <?php if ( $items ): ?>
+	<p class="py-2">
+		<small>마지막 일자:
+			<a href="<?php echo esc_url( add_query_arg( 'date', $first_date ) ); ?>"
+			   class="text-decoration-none">
+				<?php echo esc_html( $first_date ); ?>
+			</a>
+		</small>
+	</p>
+
 	<?php foreach ( $items as $date => $daily_playlist ) : ?>
 		<?php $d = date_create_immutable( $date ); ?>
 		<h5 class="mt-3 mb-2">
@@ -68,13 +78,19 @@ $is_mobile = wp_is_mobile();
 		</ul>
 		<div class="col-12 col-md-10 col-lg-8 d-flex justify-content-between mb-5 px-4">
 			<?php if ( $next ) : ?>
-				<a href="?date=<?php echo esc_attr( $next ); ?>" class="text-decoration-none">다음 날짜</a>
+				<a href="<?php echo esc_url( add_query_arg( 'date', $next ) ); ?>"
+				   class="text-decoration-none">
+					다음 날짜
+				</a>
 			<?php else: ?>
 				<span>&nbsp;</span>
 			<?php endif; ?>
 
 			<?php if ( $prev ) : ?>
-				<a href="?date=<?php echo esc_attr( $prev ); ?>" class="text-decoration-none">이전 날짜</a>
+				<a href="<?php echo esc_url( add_query_arg( 'date', $prev ) ); ?>"
+				   class="text-decoration-none">
+					이전 날짜
+				</a>
 			<?php else: ?>
 				<span>&nbsp;</span>
 			<?php endif; ?>

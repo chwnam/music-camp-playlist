@@ -48,7 +48,7 @@ if ( ! class_exists( 'MCPL_Rewrite_Handlers' ) ) {
 			if ( $date ) {
 				$the_date = date_create_immutable( $date, wp_timezone() );
 			} else {
-				$the_date = date_create_immutable( 'today midnight', wp_timezone() );
+				$the_date = date_create_immutable( $last_date, wp_timezone() );
 			}
 			$the_date_str = $the_date->format( 'Y-m-d' );
 
@@ -70,6 +70,7 @@ if ( ! class_exists( 'MCPL_Rewrite_Handlers' ) ) {
 					'music_icon_url' => plugins_url( 'assets/img/icons8-youtube.svg', MCPL_MAIN_FILE ),
 					'video_icon_url' => plugins_url( 'assets/img/icons8-youtube-music.svg', MCPL_MAIN_FILE ),
 					'items'          => $items,
+					'first_date'     => $first_date,
 					'next'           => $next ? $next->format( 'Y-m-d' ) : '',
 					'prev'           => $prev ? $prev->format( 'Y-m-d' ) : '',
 				]
