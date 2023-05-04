@@ -61,7 +61,7 @@ if ( ! class_exists( 'MCPL_Registers' ) ) {
 //					'cap'           => function () { return new MCPL_Register_Capability(); },
 //					'comment_meta'  => MCPL_Register_Comment_Meta::class,
 					'cron'          => MCPL_Register_Cron::class,
-					'cron_schedule' => MCPL_Register_Cron_Schedule::class,
+//					'cron_schedule' => MCPL_Register_Cron_Schedule::class,
 					'custom_table'  => MCPL_Register_Custom_Table::class,
 //					'deactivation'  => MCPL_Register_Deactivation::class,
 //					'menu'          => MCPL_Register_Menu::class,
