@@ -31,7 +31,7 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 			$body = static::fetch_url( $url );
 
 			preg_match_all( ':<td>(\d{4}-\d{2}-\d{2})</td>:', $body, $date_matches );
-			preg_match_all( ":href='/Music/View\?seqID=(\d+)&amp;progCode=$this->prog_code&amp;page=1':", $body, $id_matches );
+			preg_match_all( ":href='/Music/View\?seqID=(\d+)&amp;progCode=$this->prog_code&amp;page=\d+'>:", $body, $id_matches );
 
 			$items = [];
 

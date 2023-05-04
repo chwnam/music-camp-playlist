@@ -177,10 +177,10 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 			$found_rows = (int) $wpdb->get_var( "SELECT FOUND_ROWS()" );
 			$records    = array_map( [ MCPL_Object_Playlist::class, 'from' ], $rows );
 
-			$result              = new MCPL_Object_Playlist_Query();
-			$result->items       = $records;
-			$result->total       = $found_rows;
-			$result->time_spent  = $time;
+			$result             = new MCPL_Object_Playlist_Query();
+			$result->items      = $records;
+			$result->total      = $found_rows;
+			$result->time_spent = $time;
 
 			return $result;
 		}
@@ -192,7 +192,12 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 		 * @return void
 		 */
 		public function save_playlist( string $date, array $playlist ): void {
+			$logger = mcpl_get_logger();
+			$logger->debug( 'Saving playlist for ' . $date );
+
 			foreach ( $playlist as $item ) {
+				$logger->debug( sprintf( "Ttem %s - %s", $item['artist'], $item['title'] ) );
+
 				$artist_id = $this->add_artist( $item['artist'] );
 				$track_id  = $this->add_track( $artist_id, $item['title'] );
 				$this->add_history( $track_id, $date );

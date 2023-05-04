@@ -53,9 +53,9 @@ if ( ! class_exists( 'MCPL_CLI' ) ) {
 
 			$wpdb->query( "TRUNCATE {$wpdb->prefix}mcpl_history" );
 			$wpdb->query( "TRUNCATE {$wpdb->prefix}mcpl_tracks" );
-			$wpdb->query( "TRUNCATE {$wpdb->prefix}mpcl_artists" );
+			$wpdb->query( "TRUNCATE {$wpdb->prefix}mcpl_artists" );
 
-			mcpl()->store->set_last_date( '' );
+			mcpl()->store->set_last_page( 0 );
 
 			WP_CLI::success( 'All MCPL tables truncated!' );
 		}
