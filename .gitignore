@@ -12,6 +12,7 @@
 /assets/**/*.css.map
 /assets/**/*.hot-update.js
 /assets/**/*.hot-update.json
+!/assets/vendor/**/*.js.map
 
 /bin/vendor
 /cli/vendor

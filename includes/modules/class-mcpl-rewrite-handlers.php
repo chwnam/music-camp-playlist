@@ -30,11 +30,8 @@ if ( ! class_exists( 'MCPL_Rewrite_Handlers' ) ) {
 		}
 
 		public function playlist(): void {
-			$store = mcpl()->store;
-
-			$date = wp_unslash( $_GET['date'] ?? '' );
-//			$days = absint( $_GET['days'] ?? '1' );
-
+			$store  = mcpl()->store;
+			$date   = wp_unslash( $_GET['date'] ?? '' );
 			$object = $store->query( [ 'since' => $date ] );
 			$items  = [];
 
@@ -64,17 +61,30 @@ if ( ! class_exists( 'MCPL_Rewrite_Handlers' ) ) {
 				$prev = $the_date->sub( new DateInterval( 'P1D' ) );
 			}
 
-			$this->render(
-				'playlist',
-				[
-					'music_icon_url' => plugins_url( 'assets/img/icons8-youtube.svg', MCPL_MAIN_FILE ),
-					'video_icon_url' => plugins_url( 'assets/img/icons8-youtube-music.svg', MCPL_MAIN_FILE ),
-					'items'          => $items,
-					'first_date'     => $first_date,
-					'next'           => $next ? $next->format( 'Y-m-d' ) : '',
-					'prev'           => $prev ? $prev->format( 'Y-m-d' ) : '',
-				]
-			);
+			$this
+				->script( 'mcpl-playlist-calendar' )
+				->enqueue()
+				->localize(
+					[
+						'max'  => $last_date,
+						'min'  => $first_date,
+						'date' => $the_date_str,
+					],
+					'mcplCalendar'
+				)
+				->then()
+				->enqueue_style( 'mcpl-calendar' )
+				->render(
+					'playlist',
+					[
+						'music_icon_url' => plugins_url( 'assets/img/icons8-youtube.svg', MCPL_MAIN_FILE ),
+						'video_icon_url' => plugins_url( 'assets/img/icons8-youtube-music.svg', MCPL_MAIN_FILE ),
+						'items'          => $items,
+						'next'           => $next ? $next->format( 'Y-m-d' ) : '',
+						'prev'           => $prev ? $prev->format( 'Y-m-d' ) : '',
+					]
+				)
+			;
 		}
 	}
 }
