@@ -32,12 +32,24 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 			return (int) $wpdb->get_var( $query );
 		}
 
-		public function has_history( int $tracK_id, string $date ): int {
+		public function has_history( int $track_id, string $date ): int {
 			global $wpdb;
 
 			$query = $wpdb->prepare(
 				"SELECT id FROM {$wpdb->prefix}mcpl_history WHERE track_id=%d AND date=%s LIMIT 0, 1",
-				$tracK_id,
+				$track_id,
+				$date
+			);
+
+			return (int) $wpdb->get_var( $query );
+		}
+
+		public function has_sequence( string $prog_id, string $date ): int {
+			global $wpdb;
+
+			$query = $wpdb->prepare(
+				"SELECT seq_id FROM {$wpdb->prefix}mcpl_seq_ids WHERE prog_id=%s AND date=%s LIMIT 0, 1",
+				$prog_id,
 				$date
 			);
 
@@ -85,7 +97,7 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 			return $track_id;
 		}
 
-		public function add_history( int $track_id, string $date ): int {
+		public function add_history( int $track_id, string $prog_id, string $date ): int {
 			global $wpdb;
 
 			$history_id = $this->has_history( $track_id, $date );
@@ -95,10 +107,12 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 					"{$wpdb->prefix}mcpl_history",
 					[
 						'track_id' => $track_id,
+						'prog_id'  => $prog_id,
 						'date'     => $date,
 					],
 					[
 						'track_id' => '%d',
+						'prog_id'  => '%s',
 						'date'     => '%s',
 					]
 				);
@@ -107,6 +121,28 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 			}
 
 			return $history_id;
+		}
+
+		public function add_seq_id( int $seq_id, string $prog_id, string $date ): int {
+			global $wpdb;
+
+			if ( ! $this->has_sequence( $prog_id, $date ) ) {
+				$wpdb->insert(
+					"{$wpdb->prefix}mcpl_seq_ids",
+					[
+						'seq_id'  => $seq_id,
+						'prog_id' => $prog_id,
+						'date'    => $date,
+					],
+					[
+						'seq_id'  => '%d',
+						'prog_id' => '%s',
+						'date'    => '%s',
+					]
+				);
+			}
+
+			return $seq_id;
 		}
 
 		/**
@@ -186,12 +222,14 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 		}
 
 		/**
+		 * @param int                                         $seq_id
+		 * @param string                                      $prog_id
 		 * @param string                                      $date
 		 * @param array{array{artist: string, title: string}} $playlist
 		 *
 		 * @return void
 		 */
-		public function save_playlist( string $date, array $playlist ): void {
+		public function save_playlist( int $seq_id, string $prog_id, string $date, array $playlist ): void {
 			$logger = mcpl_get_logger();
 			$logger->debug( 'Saving playlist for ' . $date );
 
@@ -200,8 +238,15 @@ if ( ! class_exists( 'MCPL_Store' ) ) {
 
 				$artist_id = $this->add_artist( $item['artist'] );
 				$track_id  = $this->add_track( $artist_id, $item['title'] );
-				$this->add_history( $track_id, $date );
+				$this->add_history( $track_id, $prog_id, $date );
+				$this->add_seq_id( $seq_id, $prog_id, $date );
 			}
+		}
+
+		public function delete_history( string $date ): void {
+			global $wpdb;
+
+			$wpdb->delete( "{$wpdb->prefix}mcpl_history", [ 'date' => $date ] );
 		}
 
 		public function get_last_date(): string {

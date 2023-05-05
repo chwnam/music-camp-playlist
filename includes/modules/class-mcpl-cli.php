@@ -40,6 +40,35 @@ if ( ! class_exists( 'MCPL_CLI' ) ) {
 		}
 
 		/**
+		 * Fill all seq_ids.
+		 *
+		 * @return void
+		 */
+		public function fill_seqs(): void {
+			$fetcher = mcpl()->fetcher;
+			$store   = mcpl()->store;
+
+			$page = 1;
+
+			while ( true ) {
+				sleep( 2 );
+				WP_CLI::line( "Fetching page $page." );
+				$list = $fetcher->fetch_list( $page );
+
+				foreach ( $list as $item ) {
+					$store->add_seq_id( $item['id'], 'RAMFM300', $item['date'] );
+					if ( '2006-01-01' === $item['id'] ) {
+						break 2;
+					}
+				}
+
+				++ $page;
+			}
+
+			WP_CLI::success( "Done!" );
+		}
+
+		/**
 		 * Clear database.
 		 *
 		 * @subcommand

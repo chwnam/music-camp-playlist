@@ -14,7 +14,10 @@ if ( ! class_exists( 'MCPL_Register_AJAX' ) ) {
 		// protected bool $autobind = false;
 
 		public function get_items(): Generator {
-			yield; // yield new MCPL_Reg_AJAX();
+			/**
+			 * @uses MCPL_AJAX_Handlers::referch_playlist()
+			 */
+			yield new MCPL_Reg_AJAX( 'refetch_playlist', 'ajax_handlers@referch_playlist', true );
 		}
 	}
 }

@@ -47,7 +47,9 @@ if ( ! class_exists( 'MCPL_Rewrite_Handlers' ) ) {
 			} else {
 				$the_date = date_create_immutable( $last_date, wp_timezone() );
 			}
+
 			$the_date_str = $the_date->format( 'Y-m-d' );
+			$seq_id       = $store->has_sequence( 'RAMFM300', $the_date_str );
 
 			if ( $last_date == $the_date_str ) {
 				$next = null;
@@ -66,9 +68,15 @@ if ( ! class_exists( 'MCPL_Rewrite_Handlers' ) ) {
 				->enqueue()
 				->localize(
 					[
-						'max'  => $last_date,
-						'min'  => $first_date,
-						'date' => $the_date_str,
+						'calendar' => [
+							'max'  => $last_date,
+							'min'  => $first_date,
+							'date' => $the_date_str,
+						],
+						'ajax'     => [
+							'url'          => admin_url( 'admin-ajax.php' ),
+							'refetchNonce' => wp_create_nonce( 'refetch-nonce-' . $the_date_str ),
+						],
 					],
 					'mcplCalendar'
 				)
@@ -81,7 +89,9 @@ if ( ! class_exists( 'MCPL_Rewrite_Handlers' ) ) {
 						'video_icon_url' => plugins_url( 'assets/img/icons8-youtube-music.svg', MCPL_MAIN_FILE ),
 						'items'          => $items,
 						'next'           => $next ? $next->format( 'Y-m-d' ) : '',
+						'page_url'       => MCPL_Fetcher::get_singe_page_url( 'RAMFM300', $seq_id ),
 						'prev'           => $prev ? $prev->format( 'Y-m-d' ) : '',
+						'seq_id'         => $seq_id,
 					]
 				)
 			;

@@ -12,6 +12,7 @@ if ( ! class_exists( 'MCPL_Main' ) ) {
 	 * Class MCPL_Main
 	 *
 	 * @property-read MCPL_Admin            $admin
+	 * @property-read MCPL_AJAX_Handlers    $ajax_handlers
 	 * @property-read MCPL_CLI              $cli
 	 * @property-read MCPL_Fetcher          $fetcher
 	 * @property-read MCPL_Registers        $registers
@@ -30,6 +31,7 @@ if ( ! class_exists( 'MCPL_Main' ) ) {
 		protected function get_early_modules(): array {
 			return [
 				'admin'            => MCPL_Admin::class,
+				'ajax_handlers'    => fn() => $this->new_instance( MCPL_AJAX_Handlers::class ),
 				'cli'              => MCPL_CLI::class,
 				'fetcher'          => fn() => $this->new_instance( MCPL_Fetcher::class ),
 				'registers'        => MCPL_Registers::class,

@@ -18,14 +18,7 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 		 */
 		public function fetch_list( int $page = 1 ): array {
 			$logger = mcpl_get_logger();
-
-			$url = add_query_arg(
-				[
-					'progCode' => $this->prog_code,
-					'page'     => max( 1, $page ),
-				],
-				static::URL_BASE
-			);
+			$url    = static::get_list_page_url( $this->prog_code, $page );
 
 			$logger->info( "Fetching URL $url ... " );
 			$body = static::fetch_url( $url );
@@ -56,15 +49,7 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 		 */
 		public function fetch_item( int|string $id ): array {
 			$logger = mcpl_get_logger();
-
-			$url = add_query_arg(
-				[
-					'seqID'    => $id,
-					'progCode' => $this->prog_code,
-					'page'     => '1',
-				],
-				static::URL_BASE . "/View"
-			);
+			$url    = static::get_singe_page_url( $this->prog_code, $id );
 
 			$logger->info( "Fetching URL $url ... " );
 			$body = static::fetch_url( $url );
@@ -105,6 +90,26 @@ if ( ! class_exists( 'MCPL_Fetcher' ) ) {
 				'Accept'     => 'text/html',
 				'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
 			];
+		}
+
+		public static function get_list_page_url( string $prog_code, int $page ): string {
+			return add_query_arg(
+				[
+					'progCode' => $prog_code,
+					'page'     => max( 1, $page ),
+				],
+				static::URL_BASE
+			);
+		}
+
+		public static function get_singe_page_url( string $prog_code, int $seq_id ): string {
+			return add_query_arg(
+				[
+					'seqID'    => $seq_id,
+					'progCode' => $prog_code,
+				],
+				static::URL_BASE . "/View"
+			);
 		}
 
 		protected static function fetch_url( string $url, array $args = [] ): string {

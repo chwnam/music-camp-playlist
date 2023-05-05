@@ -71,7 +71,7 @@ if ( ! class_exists( 'MCPL_Runner' ) ) {
 				if ( $item_date > $date ) {
 					sleep( 2 );
 					$playlist = $fetcher->fetch_item( $item['id'] );
-					$store->save_playlist( $item['date'], $playlist );
+					$store->save_playlist( $item['id'], 'RAMFM300', $item['date'], $playlist );
 				}
 			}
 		}
@@ -98,10 +98,23 @@ if ( ! class_exists( 'MCPL_Runner' ) ) {
 				sleep( 2 );
 				$logger->info( "Fetching $date ... " );
 				$playlist = $fetcher->fetch_item( $id );
-				$store->save_playlist( $date, $playlist );
+				$store->save_playlist( $id, 'RAMFM300', $date, $playlist );
 			}
 
 			$logger->info( "Fetching page $page is done." );
+		}
+
+		public function refetch( string $date ): void {
+			$store  = mcpl()->store;
+			$seq_id = $store->has_sequence( 'RAMFM300', $date );
+
+			if ( $seq_id ) {
+				$playlist = mcpl()->fetcher->fetch_item( $seq_id );
+				if ( $playlist ) {
+					$store->delete_history( $date );
+					$store->save_playlist( $seq_id, 'RAMFM300', $date, $playlist );
+				}
+			}
 		}
 	}
 }

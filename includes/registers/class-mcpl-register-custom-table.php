@@ -12,7 +12,7 @@ if ( ! class_exists( 'MCPL_Register_Custom_Table' ) ) {
 	class MCPL_Register_Custom_Table extends MCPL_Register_Base_Custom_Table {
 		use MCPL_Hook_Impl;
 
-		const DB_VERSION = '20230428'; // Set DB version here.
+		const DB_VERSION = '20230505'; // Set DB version here.
 
 		/**
 		 * Constructor
@@ -68,12 +68,28 @@ if ( ! class_exists( 'MCPL_Register_Custom_Table' ) ) {
 				[
 					"id bigint(20) unsigned NOT NULL AUTO_INCREMENT",
 					"track_id bigint(20) unsigned NOT NULL",
+					"prog_id varchar(12) NOT NULL",
 					"date date NOT NULL",
 				],
 				[
 					"PRIMARY KEY  (id)",
 					"KEY idx_track_id (track_id)",
+					"KEY idx_prog_id (prog_id)",
 					"KEY idx_date (date)",
+				]
+			);
+
+			yield new MCPL_Reg_Custom_Table(
+				"{$wpdb->prefix}mcpl_seq_ids",
+				[
+					"seq_id bigint(20) unsigned NOT NULL",
+					"prog_id varchar(12) NOT NULL",
+					"date date NOT NULL",
+				],
+				[
+					"PRIMARY key  (seq_id)",
+					"KEY idx_prog_id (prog_id)",
+					"UNIQUE KEY uni_date (date)",
 				]
 			);
 		}
